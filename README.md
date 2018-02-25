@@ -1,4 +1,4 @@
-# GIS Map Interactive
+# Interactive GIS Map
 # Instructions  
 
 Step 1:
