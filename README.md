@@ -11,3 +11,6 @@ Open index.html file with a web browser on a local server
 What do I need to know to manipulate the data?
 
 HTML, CSS, JavaScript
+
+
+<img src="https://i.imgur.com/YG2jvQr.png" width="100%" />
