@@ -1,0 +1,417 @@
+// Tile layer types
+var osmHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+  maxZoom: 20,
+  subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+});
+var osmTerrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+  maxZoom: 20,
+  subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+});
+var osmStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+  maxZoom: 20,
+  subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+});
+var osmNight = L.tileLayer('http://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
+  attribution: 'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
+  minZoom: 1,
+  maxZoom: 8,
+  format: 'jpg',
+  time: '',
+  tilematrixset: 'GoogleMapsCompatible_Level'
+});
+
+window.onload = function() {
+  var map = L.map('map', {
+    layers: [osmTerrain],
+    minZoom: 1,
+    maxZoom: 20
+  }).setView([63, 20], 5);
+
+  //tile layers
+  //osm humanitarian
+  osmHuman = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+    maxZoom: 20,
+    subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+
+  }).addTo(map);
+
+  L.control.locate().addTo(map);
+
+  // get color depending on population density value
+  function getColor(d) {
+    return d > 100 ? '#800026' :
+      d > 50 ? '#BD0026' :
+      d > 20 ? '#E31A1C' :
+      d > 10 ? '#FC4E2A' :
+      d > 5 ? '#FD8D3C' :
+      d > 2 ? '#FEB24C' :
+      d > 1 ? '#FED976' :
+      '#FFEDA0';
+  }
+  //different styles for different layers
+  //Styling for styleCounties
+  function styleCounties(feature) {
+    return {
+      weight: 2,
+      opacity: 1,
+      color: 'white',
+      dashArray: '5',
+      fillOpacity: 0.4,
+      fillColor: getColor(feature.properties.LANSKOD)
+    };
+  }
+  //Styling for styleB
+  function styleB(feature) {
+    return {
+      weight: 2,
+      opacity: 1,
+      color: 'white',
+      dashArray: '5',
+      fillOpacity: 0.4,
+      fillColor: getColor(feature.properties.KOM_KOD)
+    };
+  }
+  //Styling for styleC
+  function styleC(feature) {
+    return {
+      weight: 2,
+      opacity: 1,
+      color: 'white',
+      dashArray: '5',
+      fillOpacity: 0.4,
+      fillColor: getColor(feature.properties.coordinates)
+    };
+  }
+  // L.GeoJson CaseOne
+  // Style = styleCounties
+  var caseOne = L.geoJson(counties, {
+    style: styleCounties,
+    onEachFeature: function(feature, layer) {
+      popupOptions = {
+        maxWidth: 200
+      };
+      layer.bindPopup("<b>District:</b> " + feature.properties.LANSNAMN +
+        "<br> Kommun Namn: " + feature.properties.KOMMUNNAMN +
+        "<br> Kategori: " + feature.properties.KATEGORI +
+        "<br> Kommun Kod: " + feature.properties.KOMMUNKOD +
+        "<br><b></b> Landskod: " + feature.properties.LANSKOD +
+        "<br >K Kod: " + feature.properties.KKOD +
+        "<br> Kom Kod: " + feature.properties.KOM_KOD, popupOptions);
+      //highlight
+      function highlightFeature(e) {
+        var layer = e.target;
+        layer.setStyle({
+          weight: 5,
+          color: '#666',
+          dashArray: '',
+          fillOpacity: 0.7
+        });
+
+        if (!L.Browser.ie && !L.Browser.opera) {
+          layer.bringToFront();
+        }
+        infoA.update(layer.feature.properties);
+      }
+      //reset function
+      function resetHighlight(e) {
+        CaseOne.resetStyle(e.target);
+        infoA.update()
+      }
+
+      layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+      });
+    } //END OF ON EACH FEATURE
+
+  }).addTo(map);
+
+  // L.GeoJson CaseTwo
+  // Style = styleB
+  var caseTwo = L.geoJson(counties, {
+    style: styleB,
+    onEachFeature: function(feature, layer) {
+      popupOptions = {
+        maxWidth: 200
+      };
+      layer.bindPopup("<b>District:</b> " + feature.properties.LANSNAMN +
+        "<br> Kommun Namn: " + feature.properties.KOMMUNNAMN +
+        "<br> Kategori: " + feature.properties.KATEGORI +
+        "<br> Kommun Kod: " + feature.properties.KOMMUNKOD +
+        "<br><b></b> Landskod: " + feature.properties.LANSKOD +
+        "<br >K Kod: " + feature.properties.KKOD +
+        "<br> Kom Kod: " + feature.properties.KOM_KOD, popupOptions);
+      //highlight
+      function highlightFeature(e) {
+        var layer = e.target;
+        layer.setStyle({
+          weight: 5,
+          color: '#666',
+          dashArray: '',
+          fillOpacity: 0.7
+        });
+
+        if (!L.Browser.ie && !L.Browser.opera) {
+          layer.bringToFront();
+        }
+        infoB.update(layer.feature.properties);
+      }
+      //reset function
+      function resetHighlight(e) {
+        caseTwo.resetStyle(e.target);
+        infoB.update();
+      }
+      layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+      });
+    }
+
+  })
+  // L.GeoJson CaseThree
+  // Style = styleC
+  var caseThree = L.geoJson(counties, {
+    style: styleC,
+    onEachFeature: function(feature, layer) {
+      popupOptions = {
+        maxWidth: 200
+      };
+      layer.bindPopup("<b>District:</b> " + feature.properties.LANSNAMN +
+        "<br> Kommun Namn: " + feature.properties.KOMMUNNAMN +
+        "<br> Kategori: " + feature.properties.KATEGORI +
+        "<br> Kommun Kod: " + feature.properties.KOMMUNKOD +
+        "<br><b></b> Landskod: " + feature.properties.LANSKOD +
+        "<br >K Kod: " + feature.properties.KKOD +
+        "<br> Kom Kod: " + feature.properties.KOM_KOD, popupOptions);
+      //highlight
+      function highlightFeature(e) {
+        var layer = e.target;
+        layer.setStyle({
+          weight: 5,
+          color: '#666',
+          dashArray: '',
+          fillOpacity: 0.7
+        });
+
+        if (!L.Browser.ie && !L.Browser.opera) {
+          layer.bringToFront();
+        }
+        infoC.update(layer.feature.properties);
+      }
+      //reset function
+      function resetHighlight(e) {
+        caseThree.resetStyle(e.target);
+        infoC.update();
+      }
+      layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+      });
+    }
+
+  })
+  // END
+
+  //LEGENDS START HERE
+  //LegendA
+  var legendA = L.control({
+    position: 'bottomright'
+  });
+
+  legendA.onAdd = function(map) {
+
+    var div = L.DomUtil.create('div', 'info legend'),
+      grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+      labels = ["%"],
+      from, to;
+
+    for (var i = 0; i < grades.length; i++) {
+      from = grades[i];
+      to = grades[i + 1];
+
+      labels.push(
+        '<i style="background:' + getColor(from + 1) + '"></i> ' +
+        from + (to ? '&ndash;' + to : '+'));
+    }
+
+    div.innerHTML = labels.join('<br>');
+    return div;
+  };
+
+  //LegendB
+  var legendB = L.control({
+    position: 'bottomright'
+  });
+
+  legendB.onAdd = function(map) {
+
+    var div = L.DomUtil.create('div', 'info legend'),
+      grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+      labels = ["%"],
+      from, to;
+
+    for (var i = 0; i < grades.length; i++) {
+      from = grades[i];
+      to = grades[i + 1];
+
+      labels.push(
+        '<i style="background:' + getColor(from + 1) + '"></i> ' +
+        from + (to ? '&ndash;' + to : '+'));
+    }
+
+    div.innerHTML = labels.join('<br>');
+    return div;
+  };
+
+  //LegendC
+  var legendC = L.control({
+    position: 'bottomright'
+  });
+
+  legendC.onAdd = function(map) {
+
+    var div = L.DomUtil.create('div', 'info legend'),
+      grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+      labels = ["%"],
+      from, to;
+
+    for (var i = 0; i < grades.length; i++) {
+      from = grades[i];
+      to = grades[i + 1];
+
+      labels.push(
+        '<i style="background:' + getColor(from + 1) + '"></i> ' +
+        from + (to ? '&ndash;' + to : '+'));
+    }
+
+    div.innerHTML = labels.join('<br>');
+    return div;
+  };
+
+  legendA.addTo(map);
+  currentLegend = legendA;
+
+  //Basemap
+  var baseMaps = {
+    "A:": caseOne,
+    "B:": caseTwo,
+    "C:": caseThree
+  };
+
+  var overlays = {
+    "Terrain Map": osmTerrain,
+    "Hybrid Map": osmHybrid,
+    "Night Map": osmNight,
+    "Street Map": osmStreets,
+  };
+
+
+  L.control.layers(baseMaps, overlays).addTo(map);
+
+  // control that shows state info on hover
+  //infoA
+  var infoA = L.control();
+
+  infoA.onAdd = function(map) {
+    this._div = L.DomUtil.create('div', 'info');
+    this.update();
+    return this._div;
+  };
+
+  infoA.update = function(props) {
+    this._div.innerHTML = '<h4> Case 1 </h4>' + (props ?
+      '<b>' + props.KOMMUNNAMN + '</b>' +
+      '<br> <i>2014</i> <b><i> October: </b> ' + props.LANSKOD +
+      '<br> <i>2014</i> <b> November: </b> ' + props.KOMMUNKOD +
+      '<br> <i>2014</i> <b><i> December: </b> ' + props.KOM_KOD +
+      '<br> <i>2015</i> <b><i> January: </b> ' + props.KKOD +
+      '<br> <i>2015</i> <b> February: </b> ' + props.LAN_KOD +
+      '<br> <i>2015</i> <b><i> March: </b> ' + props.LANSKOD +
+      '<br> <i>2015</i> <b><i> April: </b> ' + props.KOMMUNKOD +
+      '<br> <i>2015</i> <b> May: </b> ' + props.KOM_KOD +
+      '<br> <i>2015</i> <b><i> June: </b> ' + props.KKOD +
+      '<br> <i>2015</i> <b><i> July: </b> ' + props.LAN_KOD :
+      'Hover over a district for more details');
+  };
+
+  //infoB
+  var infoB = L.control();
+
+  infoB.onAdd = function(map) {
+    this._div = L.DomUtil.create('div', 'info');
+    this.update();
+    return this._div;
+  };
+
+  infoB.update = function(props) {
+    this._div.innerHTML = '<h4> Case 2 </h4>' + (props ?
+      '<b>' + props.KOMMUNNAMN + '</b>' +
+      '<br> <i>2014</i> <b><i> October: </b> ' + props.LANSKOD +
+      '<br> <i>2014</i> <b> November: </b> ' + props.KOMMUNKOD +
+      '<br> <i>2014</i> <b><i> December: </b> ' + props.KOM_KOD +
+      '<br> <i>2015</i> <b><i> January: </b> ' + props.KKOD +
+      '<br> <i>2015</i> <b> February: </b> ' + props.LAN_KOD +
+      '<br> <i>2015</i> <b><i> March: </b> ' + props.LANSKOD +
+      '<br> <i>2015</i> <b><i> April: </b> ' + props.KOMMUNKOD +
+      '<br> <i>2015</i> <b> May: </b> ' + props.KOM_KOD +
+      '<br> <i>2015</i> <b><i> June: </b> ' + props.KKOD +
+      '<br> <i>2015</i> <b><i> July: </b> ' + props.LAN_KOD :
+      'Hover over a district for more details');
+  };
+
+  //infoC
+  var infoC = L.control();
+
+  infoC.onAdd = function(map) {
+      this._div = L.DomUtil.create('div', 'info');
+      this.update();
+      return this._div;
+    };
+
+    infoC.update = function(props) {
+      this._div.innerHTML = '<h4> Case 3 </h4>' + (props ?
+        '<b>' + props.KOMMUNNAMN + '</b>' +
+        '<br> <i>2014</i> <b><i> October: </b> ' + props.LANSKOD +
+        '<br> <i>2014</i> <b> November: </b> ' + props.KOMMUNKOD +
+        '<br> <i>2014</i> <b><i> December: </b> ' + props.KOM_KOD +
+        '<br> <i>2015</i> <b><i> January: </b> ' + props.KKOD +
+        '<br> <i>2015</i> <b> February: </b> ' + props.LAN_KOD +
+        '<br> <i>2015</i> <b><i> March: </b> ' + props.LANSKOD +
+        '<br> <i>2015</i> <b><i> April: </b> ' + props.KOMMUNKOD +
+        '<br> <i>2015</i> <b> May: </b> ' + props.KOM_KOD +
+        '<br> <i>2015</i> <b><i> June: </b> ' + props.KKOD +
+        '<br> <i>2015</i> <b><i> July: </b> ' + props.LAN_KOD :
+        'Hover over a district for more details');
+    };
+
+
+    infoA.addTo(map);
+    currentInfo = infoA;
+
+    map.on('baselayerchange', function(eventLayer) {
+      if (eventLayer.name === 'A:') {
+        map.removeControl(currentLegend);
+        currentLegend = legendA;
+        legendA.addTo(map);
+        map.removeControl(currentInfo);
+        currentInfo = infoA;
+        infoA.addTo(map);
+      } else if (eventLayer.name === 'B:') {
+        map.removeControl(currentLegend);
+        currentLegend = legendB;
+        legendB.addTo(map);
+        map.removeControl(currentInfo);
+        currentInfo = infoB;
+        infoB.addTo(map);
+      } else if (eventLayer.name === 'C:') {
+        map.removeControl(currentLegend);
+        currentLegend = legendC;
+        legendC.addTo(map);
+        map.removeControl(currentInfo);
+        currentInfo = infoC;
+        infoC.addTo(map);
+      }
+    })
+
+
+  }
