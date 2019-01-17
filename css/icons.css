@@ -1,0 +1,24 @@
+/* ICONS */
+.icon {
+	display: inline-block;
+	margin: 2px;
+	height: 20px;
+	width: 20px;
+	background-color: #ccc;
+}
+
+.icon-shops{
+	background: url('../images/shops.png') center center no-repeat;
+	background-size: 20px 20px;
+}
+
+/* MARKERS */
+.leaflet-marker-icon {
+	padding: 2px;
+	text-align: center;
+}
+
+.marker-shops {
+	background: url('../images/shops.png') center center no-repeat;
+	background-size: 20px 20px;
+}
