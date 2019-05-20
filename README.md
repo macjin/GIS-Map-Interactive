@@ -14,4 +14,4 @@ HTML, CSS, JavaScript
 
 Screenshot of final product:
 
-<img src="https://i.imgur.com/YG2jvQr.png" width="100%" />
+<img src="https://imgur.com/a/mJ9pJdC.png" width="100%" />
