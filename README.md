@@ -12,3 +12,6 @@ What do I need to know to manipulate the data?
 
 HTML, CSS, JavaScript
  
+Screenshot:
+
+<img src="https://i.imgur.com/YG2jvQr.png" width="100%" />
